@@ -5,6 +5,7 @@ import android.os.Bundle
 import dagger.Module
 import dagger.Provides
 import dagger.android.AndroidInjection
+import kotlinx.android.synthetic.main.activity_main.button
 import kotlinx.android.synthetic.main.activity_main.textView
 import javax.inject.Inject
 
@@ -23,5 +24,8 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         textView.text = text
+        button.setOnClickListener {
+            startActivity(RetainedFragmentActivity.getLaunchIntent(this))
+        }
     }
 }

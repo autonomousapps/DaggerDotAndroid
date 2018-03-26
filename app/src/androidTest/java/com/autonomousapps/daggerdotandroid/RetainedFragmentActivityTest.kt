@@ -1,10 +1,11 @@
 package com.autonomousapps.daggerdotandroid
 
+import android.support.annotation.ColorRes
 import android.support.test.InstrumentationRegistry
 import android.support.test.espresso.Espresso.onView
 import android.support.test.espresso.assertion.ViewAssertions.matches
-import android.support.test.espresso.matcher.ViewMatchers.isDisplayed
-import android.support.test.espresso.matcher.ViewMatchers.withText
+import android.support.test.espresso.matcher.ViewMatchers.hasTextColor
+import android.support.test.espresso.matcher.ViewMatchers.withId
 import android.support.test.rule.ActivityTestRule
 import android.support.test.runner.AndroidJUnit4
 import dagger.BindsInstance
@@ -19,10 +20,10 @@ import org.junit.runner.RunWith
 import javax.inject.Singleton
 
 @RunWith(AndroidJUnit4::class)
-class MainActivityTest {
+class RetainedFragmentActivityTest {
 
     @get:Rule private var activityTestRule = ActivityTestRule(
-        MainActivity::class.java,
+        RetainedFragmentActivity::class.java,
         false,
         false
     )
@@ -30,35 +31,41 @@ class MainActivityTest {
     @Singleton
     @Component(modules = [
         AndroidSupportInjectionModule::class,
-        TestMainActivityModule::class
+        TestRetainedFragmentActivityModule::class
     ])
-    interface TestMainApplicationComponent : MainApplication.MainApplicationComponent {
+    interface TestRetainedFragmentActivityApplicationComponent : MainApplication.MainApplicationComponent {
 
         @Component.Builder
         interface Builder {
             @BindsInstance fun app(app: MainApplication): Builder
-            @BindsInstance fun text(text: String): Builder
-            fun build(): TestMainApplicationComponent
+            @BindsInstance fun colorFactory(colorFactory: ColorFactory): Builder
+            fun build(): TestRetainedFragmentActivityApplicationComponent
         }
     }
 
-    @Module abstract class TestMainActivityModule {
-        @ContributesAndroidInjector abstract fun mainActivity(): MainActivity
+    @Module abstract class TestRetainedFragmentActivityModule {
         @ContributesAndroidInjector abstract fun retainedFragmentActivity(): RetainedFragmentActivity
+        @ContributesAndroidInjector(modules = [ColoredTextViewModule::class]) abstract fun retainedFragment(): RetainedFragment
     }
+
+    @ColorRes private val green = R.color.green
 
     @Before fun setUp() {
         val app = InstrumentationRegistry.getTargetContext().applicationContext as DebugMainApplication
-        val mainComponent = DaggerMainActivityTest_TestMainApplicationComponent.builder()
+        val mainComponent = DaggerRetainedFragmentActivityTest_TestRetainedFragmentActivityApplicationComponent.builder()
             .app(app)
-            .text("I'm a test!")
+            .colorFactory(FakeColorFactory(green))
             .build()
         app.setTestComponent(mainComponent)
 
         activityTestRule.launchActivity(null)
     }
 
-    @Test fun verifyText() {
-        onView(withText("I'm a test!")).check(matches(isDisplayed()))
+    @Test fun verifyColor() {
+        onView(withId(R.id.coloredTextView)).check(matches(hasTextColor(green)))
     }
+}
+
+class FakeColorFactory(private val colorRes: Int) : ColorFactory {
+    @ColorRes override fun getColor() = colorRes
 }
