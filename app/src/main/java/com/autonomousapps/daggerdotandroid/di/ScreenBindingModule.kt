@@ -9,6 +9,7 @@ import dagger.android.ContributesAndroidInjector
 
 @Module
 abstract class ScreenBindingModule {
+    @ActivityScoped
     @ContributesAndroidInjector(modules = [MainActivityModule::class]) abstract fun mainActivity(): MainActivity
 
     // RetainedFragment is declared here because it has no dependencies on its host Activity, and is
