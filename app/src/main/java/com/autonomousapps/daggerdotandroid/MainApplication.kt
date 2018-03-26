@@ -1,5 +1,6 @@
 package com.autonomousapps.daggerdotandroid
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Application
 import android.content.Context
@@ -15,6 +16,9 @@ import dagger.android.support.HasSupportFragmentInjector
 import javax.inject.Inject
 import javax.inject.Singleton
 
+// AS seems to have trouble with application classes written in Kotlin. Rest assured, this works fine. We're just
+// suppressing an invalid warning.
+@SuppressLint("Registered")
 open class MainApplication : Application(), HasActivityInjector, HasSupportFragmentInjector {
 
     override fun onCreate() {
