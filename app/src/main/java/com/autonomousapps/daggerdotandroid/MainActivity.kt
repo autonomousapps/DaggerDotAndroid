@@ -20,7 +20,7 @@ import javax.inject.Inject
 @Module
 object MainActivityModule {
     @Provides @JvmStatic fun provideText() = "Why hello there!"
-    @Provides @JvmStatic fun provideMutableObject() = MutableObject()
+    @Provides @JvmStatic fun provideMutableObjectFactory() = MutableObjectFactory()
 }
 
 class MainActivity : AppCompatActivity() {
@@ -53,6 +53,15 @@ class MainActivity : AppCompatActivity() {
 
 class MutableObject(var counter: Int = 0)
 
+/**
+ * Let's assume that [MutableObject] is very heavy, and we don't want to create a new one unless we really have to.
+ * If we provided one directly via Dagger, then on each rotation a new instance would be created, even though it
+ * would never get used.
+ */
+class MutableObjectFactory {
+    fun newMutableObject() = MutableObject()
+}
+
 class MainActivityViewModel(private val mutableObject: MutableObject) : ViewModel() {
 
     private val counter: MutableLiveData<Int> = MutableLiveData()
@@ -69,13 +78,16 @@ class MainActivityViewModel(private val mutableObject: MutableObject) : ViewMode
 }
 
 class MainActivityViewModelFactory @Inject constructor(
-    private val mutableObject: MutableObject
+    private val mutableObjectFactory: MutableObjectFactory
 ) : ViewModelProvider.Factory {
 
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
         return when {
-            modelClass.isAssignableFrom(MainActivityViewModel::class.java) -> MainActivityViewModel(mutableObject) as T
+            modelClass.isAssignableFrom(MainActivityViewModel::class.java) -> {
+                val mutableObject = mutableObjectFactory.newMutableObject()
+                MainActivityViewModel(mutableObject) as T
+            }
             else -> throw IllegalArgumentException("${modelClass.simpleName} is an unknown type of view model")
         }
     }
