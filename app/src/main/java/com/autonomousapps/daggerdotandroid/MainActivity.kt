@@ -11,9 +11,10 @@ import android.support.v7.app.AppCompatActivity
 import dagger.Module
 import dagger.Provides
 import dagger.android.AndroidInjection
-import kotlinx.android.synthetic.main.activity_main.button
 import kotlinx.android.synthetic.main.activity_main.counterButton
 import kotlinx.android.synthetic.main.activity_main.counterText
+import kotlinx.android.synthetic.main.activity_main.launchFragmentButton
+import kotlinx.android.synthetic.main.activity_main.launchRetainedFragmentButton
 import kotlinx.android.synthetic.main.activity_main.textView
 import javax.inject.Inject
 
@@ -38,7 +39,12 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         textView.text = text
-        button.setOnClickListener {
+
+        launchFragmentButton.setOnClickListener {
+            startActivity(SimpleFragmentActivity.getLaunchIntent(this))
+        }
+
+        launchRetainedFragmentButton.setOnClickListener {
             startActivity(RetainedFragmentActivity.getLaunchIntent(this))
         }
 

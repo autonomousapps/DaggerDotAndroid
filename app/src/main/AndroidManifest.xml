@@ -19,6 +19,11 @@
         </activity>
         <activity android:name=".RetainedFragmentActivity">
         </activity>
+        <activity
+            android:name=".SimpleFragmentActivity"
+            android:label="@string/title_activity_simple_fragment"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
     </application>
 
 </manifest>
