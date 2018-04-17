@@ -61,8 +61,8 @@ class MutableObject(var counter: Int = 0)
 
 /**
  * Let's assume that [MutableObject] is very heavy, and we don't want to create a new one unless we really have to.
- * If we provided one directly via Dagger, then on each rotation a new instance would be created, even though it
- * would never get used.
+ * If we provided one directly via Dagger (without a scope of some kind), then on each rotation a new instance would be
+ * created, even though it would never get used.
  */
 class MutableObjectFactory {
     fun newMutableObject() = MutableObject()

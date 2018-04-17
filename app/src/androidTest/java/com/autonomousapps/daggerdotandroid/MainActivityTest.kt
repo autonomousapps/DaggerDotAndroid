@@ -38,6 +38,7 @@ class MainActivityTest {
         interface Builder {
             @BindsInstance fun app(app: MainApplication): Builder
             @BindsInstance fun text(text: String): Builder
+            @BindsInstance fun mutableObjectFactory(factory: MutableObjectFactory): Builder
             fun build(): TestMainApplicationComponent
         }
     }
@@ -52,6 +53,7 @@ class MainActivityTest {
         val mainComponent = DaggerMainActivityTest_TestMainApplicationComponent.builder()
             .app(app)
             .text("I'm a test!")
+            .mutableObjectFactory(MutableObjectFactory())
             .build()
         app.setTestComponent(mainComponent)
 
@@ -61,4 +63,6 @@ class MainActivityTest {
     @Test fun verifyText() {
         onView(withText("I'm a test!")).check(matches(isDisplayed()))
     }
+
+    // TODO write test with stub MutableObjectFactory
 }
