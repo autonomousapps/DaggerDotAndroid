@@ -88,7 +88,7 @@ class MainActivityViewModelFactory @Inject constructor(
 ) : ViewModelProvider.Factory {
 
     @Suppress("UNCHECKED_CAST")
-    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
         return when {
             modelClass.isAssignableFrom(MainActivityViewModel::class.java) -> {
                 val mutableObject = mutableObjectFactory.newMutableObject()

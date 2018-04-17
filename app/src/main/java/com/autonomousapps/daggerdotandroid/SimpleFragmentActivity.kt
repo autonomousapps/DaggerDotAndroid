@@ -116,21 +116,6 @@ class SimpleFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_simple, container, false)
     }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        @ColorRes val color = arguments?.getInt(ARG_COLOR)
-            ?: throw IllegalStateException("You must supply an argument!")
-
-        val spannable = SpannableString(textView.text)
-        spannable.setSpan(
-            ForegroundColorSpan(ContextCompat.getColor(view.context, color)),
-            0, spannable.length,
-            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-        )
-
-        textView.text = spannable
-    }
 }
 
 class SimpleFragmentActivityViewModelFactory @Inject constructor(
@@ -138,7 +123,7 @@ class SimpleFragmentActivityViewModelFactory @Inject constructor(
 ) : ViewModelProvider.Factory {
 
     @Suppress("UNCHECKED_CAST")
-    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
         return when {
             modelClass.isAssignableFrom(SimpleFragmentActivityViewModel::class.java) -> {
                 SimpleFragmentActivityViewModel(text) as T
