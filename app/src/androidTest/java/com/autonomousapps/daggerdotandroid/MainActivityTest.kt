@@ -6,7 +6,6 @@ import android.support.test.espresso.assertion.ViewAssertions.matches
 import android.support.test.espresso.matcher.ViewMatchers.isDisplayed
 import android.support.test.espresso.matcher.ViewMatchers.withText
 import android.support.test.rule.ActivityTestRule
-import android.support.test.runner.AndroidJUnit4
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
@@ -15,10 +14,7 @@ import dagger.android.support.AndroidSupportInjectionModule
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.junit.runner.RunWith
-import javax.inject.Singleton
 
-@RunWith(AndroidJUnit4::class)
 class MainActivityTest {
 
     @get:Rule private var activityTestRule = ActivityTestRule(
@@ -27,7 +23,6 @@ class MainActivityTest {
         false
     )
 
-    @Singleton
     @Component(modules = [
         AndroidSupportInjectionModule::class,
         TestMainActivityModule::class

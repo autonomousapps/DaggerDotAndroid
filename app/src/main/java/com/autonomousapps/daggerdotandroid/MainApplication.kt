@@ -9,6 +9,7 @@ import com.autonomousapps.daggerdotandroid.di.AndroidViewInjectionModule
 import com.autonomousapps.daggerdotandroid.di.ScreenBindingModule
 import dagger.BindsInstance
 import dagger.Component
+import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.HasActivityInjector
 import dagger.android.support.AndroidSupportInjectionModule
@@ -27,19 +28,17 @@ open class MainApplication : Application(), HasActivityInjector, HasSupportFragm
     }
 
     private fun initDagger() {
-        mainApplicationComponent = DaggerMainApplication_MainApplicationComponent.builder()
+        DaggerMainApplication_MainApplicationComponent.builder()
             .app(this)
             .build()
-        mainApplicationComponent.inject(this)
+            .inject(this)
     }
 
     @Inject protected lateinit var dispatchingAndroidInjector: DispatchingAndroidInjector<Activity>
-    override fun activityInjector() = dispatchingAndroidInjector
+    override fun activityInjector(): AndroidInjector<Activity> = dispatchingAndroidInjector
 
     @Inject lateinit var fragmentInjector: DispatchingAndroidInjector<Fragment>
     override fun supportFragmentInjector() = fragmentInjector
-
-    protected lateinit var mainApplicationComponent: MainApplicationComponent
 
     @Singleton
     @Component(modules = [
