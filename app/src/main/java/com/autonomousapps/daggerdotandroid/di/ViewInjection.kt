@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.ContextWrapper
 import android.view.View
 import com.autonomousapps.daggerdotandroid.checkNotNull
-import java.util.Locale
 
 object ViewInjection {
     fun inject(view: View) {
@@ -19,11 +18,7 @@ object ViewInjection {
         val activity = view.getActivity()
         if (activity !is HasViewInjector) {
             throw RuntimeException(
-                String.format(Locale.US,
-                    "%s does not implement %s",
-                    activity.javaClass.canonicalName,
-                    HasViewInjector::class.java.canonicalName
-                )
+                String.format("${activity.javaClass.canonicalName} does not implement ${HasViewInjector::class.java.canonicalName}")
             )
         }
         return activity

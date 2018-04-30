@@ -33,7 +33,6 @@ class MainActivityTest {
         interface Builder {
             @BindsInstance fun app(app: MainApplication): Builder
             @BindsInstance fun text(text: String): Builder
-            @BindsInstance fun mutableObjectFactory(factory: MutableObjectFactory): Builder
             fun build(): TestMainApplicationComponent
         }
     }
@@ -48,7 +47,6 @@ class MainActivityTest {
         val mainComponent = DaggerMainActivityTest_TestMainApplicationComponent.builder()
             .app(app)
             .text("I'm a test!")
-            .mutableObjectFactory(MutableObjectFactory())
             .build()
         app.setTestComponent(mainComponent)
 

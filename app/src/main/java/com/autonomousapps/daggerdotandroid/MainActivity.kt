@@ -21,7 +21,6 @@ import javax.inject.Inject
 @Module
 object MainActivityModule {
     @Provides @JvmStatic fun provideText() = "Why hello there!"
-    @Provides @JvmStatic fun provideMutableObjectFactory() = MutableObjectFactory()
 }
 
 class MainActivity : AppCompatActivity() {
@@ -48,7 +47,7 @@ class MainActivity : AppCompatActivity() {
             startActivity(RetainedFragmentActivity.getLaunchIntent(this))
         }
 
-        viewModel.getCounter().observe(this, Observer {
+        viewModel.counter().observe(this, Observer {
             counterText.text = it.toString()
         })
         counterButton.setOnClickListener {
@@ -64,22 +63,21 @@ class MutableObject(var counter: Int = 0)
  * If we provided one directly via Dagger (without a scope of some kind), then on each rotation a new instance would be
  * created, even though it would never get used.
  */
-class MutableObjectFactory {
+class MutableObjectFactory @Inject constructor() {
     fun newMutableObject() = MutableObject()
 }
 
 class MainActivityViewModel(private val mutableObject: MutableObject) : ViewModel() {
 
-    private val counter: MutableLiveData<Int> = MutableLiveData()
+    private val counterLiveData = MutableLiveData<Int>()
+    fun counter(): LiveData<Int> = counterLiveData
 
     init {
-        counter.value = mutableObject.counter
+        counterLiveData.value = mutableObject.counter
     }
 
-    fun getCounter(): LiveData<Int> = counter
-
     fun onClickCounter() {
-        counter.value = ++mutableObject.counter
+        counterLiveData.value = ++mutableObject.counter
     }
 }
 
@@ -91,8 +89,7 @@ class MainActivityViewModelFactory @Inject constructor(
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         return when {
             modelClass.isAssignableFrom(MainActivityViewModel::class.java) -> {
-                val mutableObject = mutableObjectFactory.newMutableObject()
-                MainActivityViewModel(mutableObject) as T
+                MainActivityViewModel(mutableObjectFactory.newMutableObject()) as T
             }
             else -> throw IllegalArgumentException("${modelClass.simpleName} is an unknown type of view model")
         }
